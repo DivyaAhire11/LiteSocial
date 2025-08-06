@@ -7,7 +7,7 @@ const PORT = 3000 || process.env.PORT
 
 //my utils
 import responder from "./Utils/respond.js"
-import { signup } from "./Controller/AuthControler.js"
+import { signup,login } from "./Controller/AuthControler.js"
 
 //my config
 import connectdb from "./Config/connectdb.js"
@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.post("/api/signup", signup)
-
+app.post("/api/login",login);
 
 app.get("/", (req, res) => {
     return responder(res, null, 200, true, "success")
