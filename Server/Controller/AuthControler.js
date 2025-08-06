@@ -3,35 +3,44 @@ import User from "../Models/user.model.js"
 import bcrypt from "bcrypt"
 
 const signup = async (req, res) => {
-    try { 
-        console.log(req.body)
-        
-        const { name, email, password } = req.body
+    try {
        
-        const requiredinfo = ["name", "email", "password"]
+
+        let { name, email, password, userName } = req.body
+
+        const requiredinfo = ["name", "email", "password", "userName"]
 
         requiredinfo.forEach((ele) => {
             if (!(req.body[ele])) {
-                responder(null, [], 400, false, `${ele} field is required`)
+                responder(null, [], 400, false, `${ele} is required`)
             }
         })
-      
+         
         //check is user already exist
         let IsUserExist = await User.findOne({ email })
-         if (IsUserExist) {
+        if (IsUserExist) {
             responder(res, null, 400, false, "email already exist")
+        }
+
+        let userNameExist = await User.findOne({ userName })
+
+        if (userNameExist) {
+            return responder(res, null, 400, false, "user name already taken");
         }
         // if not exist              
         const hashPassword = await bcrypt.hash(password, 10)
 
         const createUser = await User.create({
-           Username : name,
-           Email: email,
-           Password: hashPassword
+            name,
+            email,
+            password: hashPassword,
+            userName
         })
+        await createUser.save();
 
-        if (createUser) {
-            await createUser.save();
+        if (!createUser) {
+            return responder(res, [], 400, false, "Someting went wrong")
+        } else {
             return responder(res, createUser, 200, true, "User create successfully")
         }
 
