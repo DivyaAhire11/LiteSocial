@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 
 const app = express()
 const PORT = 3000 || process.env.PORT
@@ -7,16 +8,31 @@ const PORT = 3000 || process.env.PORT
 import responder from "./Utils/respond.js"
 import { signup } from "./Controller/AuthControler.js"
 
-app.post("/api/signup",signup)
+//my config
+import connectdb from "./Config/connectdb.js"
+import session from "express-session"
 
-app.get("/",(req,res)=>{
-    return responder(res,null,200,true,"success")
+// app.use(cors({
+//     origin : 'http://localhost:5173',
+//     credentials:true
+// }))
+app.use(cors())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+app.post("/api/signup", signup)
+
+
+app.get("/", (req, res) => {
+    return responder(res, null, 200, true, "success")
 })
 
-app.get("/health",(req,res)=>{
-    responder(res,null,200,true,"server is running healthy")
+app.get("/health", (req, res) => {
+    responder(res, null, 200, true, "server is running healthy")
 })
 
-app.listen(PORT ,()=>{
+app.listen(PORT, () => {
     console.log(`Server run on port ${PORT}`)
+    connectdb();
 })
