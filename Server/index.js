@@ -1,12 +1,13 @@
 import express from "express"
 import cors from "cors"
 import session from "express-session";
+
+
+import upload from "./middleware/multer.js";
+
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 config();
-
-const app = express()
-const PORT = 3000 || process.env.PORT
 
 //my utils
 import responder from "./Utils/respond.js"
@@ -15,6 +16,13 @@ import { signup, login } from "./Controller/AuthControler.js"
 //my config..
 import connectdb from "./Config/connectdb.js"
 
+
+
+const app = express()
+const PORT = 3000 || process.env.PORT
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: [],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
@@ -30,13 +38,15 @@ app.use(session({
         httpOnly: true
     }
 }))
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 
 //Controlers
 app.post("/api/signup", signup)
 app.post("/api/login", login);
+
+app.post("/api/upload", upload.single("file"), (req, res) => {
+    console.log(req.file)
+})
 
 app.get("/", (req, res) => {
     return responder(res, null, 200, true, "success")

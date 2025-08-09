@@ -1,3 +1,4 @@
+import { text } from "express";
 import { Schema, model } from "mongoose";
 
 const PostSchema = new Schema({
@@ -25,5 +26,12 @@ const PostSchema = new Schema({
             type: String,
             default: "#LiteSocial"
         }]
-    }
+    },
+    Comment: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        text: {
+            type: String
+        }
+    }]
 })
