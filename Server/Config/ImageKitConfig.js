@@ -1,18 +1,19 @@
-import imagekit from "imagekit"
+import Imagekit from "imagekit"
+import responder from "../Utils/respond.js"
 
-const ImageKitConfig=()=>{
-       try {
-        
-        let IMGKit = new imagekit({
-            publicKey : `${process.env.IMAGEKIT_PUBLIC_KEY}`,
-            privateKey : `${process.env.IMAGEKIT_PRIVATE_KEY}`,
-            urlEndpoint : "https://ik.imagekit.io/liteSocial"
+const ImageKitConfig = () => {
+    try {
+
+        return new Imagekit({
+            publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+            privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+            urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
         })
-        return IMGKit
-
-       } catch (error) {
-           console.log(error.message)
-       }
+        
+    } catch (error) {
+        console.log(error.message)
+        return responder(responder,[],400,false,`${error.message}`)
+    }
 }
 
 export default ImageKitConfig

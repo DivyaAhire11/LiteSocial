@@ -1,7 +1,8 @@
 import express from "express"
 import cors from "cors"
 import session from "express-session";
-//fs = file system(package)
+
+//fs = file system(package)bydefault install in nodejs
 
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
@@ -55,11 +56,12 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
         const filePath = req.file.path;
 
         const uploadResponce = await imagekit.upload({
-            file: fs.readFileSync(filePath),
+            file: fs.readFileSync(filePath),//read file
             fileName: req.file.originalname,
             folder: "./liteSocial"
         })
-        fs.unlinkSync(filePath);
+
+        fs.unlinkSync(filePath);//file delete
 
         return res.json({
             url: uploadResponce
