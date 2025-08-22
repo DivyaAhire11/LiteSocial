@@ -78,4 +78,5 @@ const login = async (req, res) => {
         return responder(res, null, 500, false, `${error.message}`)
     }
 }
+
 export { signup, login }

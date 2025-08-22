@@ -1,17 +1,18 @@
+import imagekit from "imagekit"
 
-const imageKitConfig=()=>{
+const ImageKitConfig=()=>{
        try {
         
-        let imagekit = new imagekit({
+        let IMGKit = new imagekit({
             publicKey : `${process.env.IMAGEKIT_PUBLIC_KEY}`,
             privateKey : `${process.env.IMAGEKIT_PRIVATE_KEY}`,
             urlEndpoint : "https://ik.imagekit.io/liteSocial"
         })
-        return imagekit
+        return IMGKit
 
        } catch (error) {
            console.log(error.message)
        }
 }
 
-export default imageKitConfig
+export default ImageKitConfig

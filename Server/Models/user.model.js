@@ -30,11 +30,20 @@ const userSchema = new Schema({
       userProfile: {
          type: String,
          default:"https://preview.redd.it/instagram-default-user-profile-pic-flip-flops-v0-clnilflfeg4d1.jpg?width=230&format=pjpg&auto=webp&s=e5c920f218f52a77c28abc5175c8db29dfa0d219"
+      },
+      accountType:{
+         type :String,
+         default:"public",
+         enum:["public","private"]
       }
    },
    posts:[{
       type:Schema.Types.ObjectId,
       ref:"Posts"
+   }],
+   followers:[{
+      type :Schema.Types.ObjectId,
+      ref:"User"
    }]
 })
 

@@ -1,25 +1,26 @@
 import express from "express"
 import cors from "cors"
 import session from "express-session";
-
-import multer from "multer";
-import upload from "./middleware/multer.js";
-import imageKitConfig from "./Config/ImageKitConfig.js";
-
-let imagekit = imageKitConfig();
+//fs = file system(package)
 
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 config();
 
+//Controller
+import { signup, login } from "./Controller/AuthControler.js"
+import { uploadProfile } from "./Controller/postPicControl.js";
+
 //my utils
 import responder from "./Utils/respond.js"
-import { signup, login } from "./Controller/AuthControler.js"
 
 //my config..
 import connectdb from "./Config/connectdb.js"
+import imageKitConfig from "./Config/ImageKitConfig.js";
+let imagekit = imageKitConfig();
 
-
+//middleware
+import upload from "./middleware/multer.js";
 
 const app = express()
 const PORT = 3000 || process.env.PORT
@@ -47,11 +48,30 @@ app.use(session({
 //Controlers
 app.post("/api/signup", signup)
 app.post("/api/login", login);
+app.post("/api/uploadProfile", upload.single("ProfileImg"), uploadProfile) //upload image on cloud
 
-app.post("/api/upload", upload.single("file"), (req, res) => {
-    // console.log(req.file)
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+    try {
+        const filePath = req.file.path;
+
+        const uploadResponce = await imagekit.upload({
+            file: fs.readFileSync(filePath),
+            fileName: req.file.originalname,
+            folder: "./liteSocial"
+        })
+        fs.unlinkSync(filePath);
+
+        return res.json({
+            url: uploadResponce
+        })
+    } catch (error) {
+        return responder(res, null, 400, false, `${error.message}`)
+    }
 })
 
+
+
+//general routes
 app.get("/", (req, res) => {
     return responder(res, null, 200, true, "success")
 })
